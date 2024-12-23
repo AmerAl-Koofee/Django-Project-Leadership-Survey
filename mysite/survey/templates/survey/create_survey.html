@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+
+
+{% block content %}
+<h1>Add Survey</h1>
+<form method="post" action="{% url 'survey:create_survey' %}">
+    {% csrf_token %}
+    <div>
+        <label for="name">Name:</label>
+        <input type="text" name="name" id="name" required>
+        <small>The title of the survey.</small>
+    </div>
+    <div>
+        <label for="description">Description:</label>
+        <textarea name="description" id="description"></textarea>
+        <small>A brief description of the survey.</small>
+    </div>
+    <div>
+        <label for="is_editable">Is editable:</label>
+        <input type="checkbox" name="is_editable" id="is_editable" checked>
+        <small>Can the survey be edited after creation?</small>
+    </div>
+    <div>
+        <label for="allow_multiple_submissions">Allow multiple submissions:</label>
+        <input type="checkbox" name="allow_multiple_submissions" id="allow_multiple_submissions">
+        <small>Allow users to submit the survey multiple times.</small>
+    </div>
+    <div>
+        <label for="published">Published:</label>
+        <input type="checkbox" name="published" id="published">
+        <small>Is the survey published?</small>
+    </div>
+    <!-- Add Password Field -->
+    <div>
+        <label for="survey_password">Survey Password:</label>
+        <input type="text" name="survey_password" id="survey_password" placeholder="Enter 5-digit password">
+        <small>Set a password for accessing this survey (optional).</small>
+    </div>
+    <!-- Add Email Invites Field -->
+    <div id="emails-container">
+        <div class="email-item">
+        <input type="email" name="emails" placeholder="Enter email">
+        <button type="button" class="remove-email-button">Remove</button>
+        </div>
+    </div>
+    <button type="button" id="add-email-button">Add Email</button>
+    <small>Add email addresses to invite participants (optional).</small>
+    
+    </div>
+    <button type="submit">Create Survey</button>
+</form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const addEmailButton = document.getElementById("add-email-button");
+        const emailsContainer = document.getElementById("emails-container");
+
+        // Add a new email input field
+        addEmailButton.addEventListener("click", function () {
+            const emailDiv = document.createElement("div");
+            emailDiv.classList.add("email-item");
+
+            emailDiv.innerHTML = `
+                <input type="email" name="emails" placeholder="Enter email">
+                <button type="button" class="remove-email-button">Remove</button>
+            `;
+
+            emailsContainer.appendChild(emailDiv);
+
+            // Add event listener to the remove button
+            const removeButton = emailDiv.querySelector(".remove-email-button");
+            removeButton.addEventListener("click", function () {
+                emailDiv.remove();
+            });
+        });
+
+        // Attach remove functionality to existing buttons
+        emailsContainer.querySelectorAll(".remove-email-button").forEach(button => {
+            button.addEventListener("click", function () {
+                button.closest(".email-item").remove();
+            });
+        });
+    });
+</script>
+
+{% endblock %}

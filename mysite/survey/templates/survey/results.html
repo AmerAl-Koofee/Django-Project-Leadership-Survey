@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Survey Results</h1>
+<ul>
+    {% for response in responses %}
+        <li>
+            <a href="{% url 'survey:survey-analysis' slug=response.survey.slug %}">
+                {{ response.survey.name }}
+            </a>
+            <small>Answered by: {{ response.user.username }}</small>
+            
+            {% if user.is_superuser or response.survey.created_by == user %}
+                <form method="post" action="{% url 'survey:delete-response' response.id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="delete-button">Remove</button>
+                </form>
+            {% endif %}
+        </li>
+    {% empty %}
+        <p>No responses available.</p>
+    {% endfor %}
+</ul>
+{% endblock %}

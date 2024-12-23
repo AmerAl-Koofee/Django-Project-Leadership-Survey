@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Analysis for {{ survey.name }}</h1>
+
+{% if users %}
+<!-- Filter by User (Visible only to admins or survey creators) -->
+<form method="get">
+    <label for="user">Filter by User:</label>
+    <select name="user" id="user" onchange="this.form.submit()">
+        <option value="">All Users</option>
+        {% for user in users %}
+        <option value="{{ user }}" {% if user == selected_user %}selected{% endif %}>{{ user }}</option>
+        {% endfor %}
+    </select>
+</form>
+{% endif %}
+
+<!-- Show Charts -->
+<h2>Analysis by Dimensions</h2>
+<img src="data:image/png;base64,{{ dimension_chart }}" alt="Dimensions Analysis">
+
+<h2>Analysis by Areas</h2>
+<img src="data:image/png;base64,{{ area_chart }}" alt="Areas Analysis">
+{% endblock %}

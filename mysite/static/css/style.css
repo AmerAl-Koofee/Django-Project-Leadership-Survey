@@ -1,0 +1,24 @@
+
+form{
+    display: flex;
+    flex-flow: column;
+    gap: 0.5rem;
+    padding: 0.25rem;
+    max-width: 300px;
+    font-size: 1rem;
+    gap: 1rem;
+}
+
+button {
+    padding: 0.2rem;
+    border-radius: 10px;
+    width: 125px;
+}
+
+li {
+    padding: 0.65rem;
+}
+
+a {
+    padding: 0.65rem;
+}

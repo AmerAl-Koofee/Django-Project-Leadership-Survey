@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Delete Question</h1>
+<p>Are you sure you want to delete the question "{{ question.label }}"?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Yes, Delete</button>
+    <button type="button" class="cancel-button" onclick="location.href='{% url 'survey:add-question' question.survey.slug %}'">
+        Cancel
+    </button>    
+</form>
+{% endblock %}

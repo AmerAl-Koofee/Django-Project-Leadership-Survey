@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %} Django App {% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v={{ STATIC_VERSION }}" />
+    <script src="{% static 'js/main.js' %}" defer></script>
+  </head>
+  <body>
+
+    <nav>
+      <a href="/">
+        <span role="img" aria-label="Home" title="Home">Home</span> 
+      </a>|
+
+      {% if user.is_authenticated %} {% if user.is_superuser %}
+
+      <a href="{% url 'survey:create_survey' %}">
+        <span role="img" aria-label="Create Survey" title="Create Survey">Create Survey</span> 
+      </a>|
+          
+      {% endif %}
+
+      <a href="{% url 'survey:survey' %}">
+        <span role="img" aria-label="Survey" title="Survey">Survey</span> 
+      </a>|
+
+      <a href="{% url 'survey:results-page' %}">
+        <span role="img" aria-label="Results" title="Results">Results</span>
+      </a>|    
+    </nav>
+    
+      <form action="{% url 'users:logout' %}" method="post">
+        {% csrf_token %}
+        <button aria-label="User Logout" title="User Logout">Logout</button>
+      </form>
+
+      {% else %}
+
+      <a href="{% url 'users:register' %}">
+        <span role="img" aria-label="User Registration" title="User Registration">User Registration</span> 
+      </a>|
+
+      <a href="{% url 'users:login' %}">
+        <span role="img" aria-label="User Login" title="User Login">Login</span>
+      </a>
+      {% endif %}
+    </nav>
+
+    <main>
+    {% if messages %}
+  <div>
+    {% for message in messages %} 
+    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+    {% endif %}
+    
+    {% block content %} {% endblock %}
+    </main>
+    
+  </body>
+</html>

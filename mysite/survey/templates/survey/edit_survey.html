@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Edit Survey</h1>
+<form method="post">
+    {% csrf_token %}
+    <label for="name">Name:</label>
+    <input type="text" name="name" id="name" value="{{ survey.name }}" required>
+
+    <label for="description">Description:</label>
+    <textarea name="description" id="description" required>{{ survey.description }}</textarea>
+
+    <label for="password">Survey Password:</label>
+    <input type="text" name="password" id="password" value="{{ survey.password }}" placeholder="Enter 5-digit password (optional)">
+    <small>Set or change the password for accessing this survey.</small>
+
+    <label>Invite Emails:</label>
+    <div id="emails-container">
+        {% for email in recipient_emails %}
+        <div class="email-item">
+            <input type="email" name="emails" value="{{ email.strip }}" placeholder="Enter email">
+            <button type="button" class="remove-email-button">Remove</button>
+        </div>
+        {% endfor %}
+    </div>
+    <button type="button" id="add-email-button">Add Email</button>
+    <small>Add or remove email addresses for invited users.</small>
+    
+
+    <button type="submit">Save Changes</button>
+    <button type="button" class="cancel-button" onclick="location.href='{% url 'survey:add-question' survey.slug %}'">
+        Cancel
+    </button>
+</form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const emailsContainer = document.getElementById("emails-container");
+        const addEmailButton = document.getElementById("add-email-button");
+
+        // Add a new email input field
+        addEmailButton.addEventListener("click", () => {
+            const emailDiv = document.createElement("div");
+            emailDiv.classList.add("email-item");
+
+            emailDiv.innerHTML = `
+                <input type="email" name="emails" placeholder="Enter email">
+                <button type="button" class="remove-email-button">Remove</button>
+            `;
+
+            emailsContainer.appendChild(emailDiv);
+
+            // Add remove functionality to the newly added button
+            emailDiv.querySelector(".remove-email-button").addEventListener("click", () => {
+                emailDiv.remove();
+            });
+        });
+
+        // Attach remove functionality to existing buttons
+        emailsContainer.querySelectorAll(".remove-email-button").forEach(button => {
+            button.addEventListener("click", () => {
+                button.closest(".email-item").remove();
+            });
+        });
+    });
+</script>
+{% endblock %}

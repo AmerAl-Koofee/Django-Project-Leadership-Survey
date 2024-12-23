@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ survey.name }}</h1>
+<p>{{ survey.description }}</p>
+
+<form method="post">
+    {% csrf_token %}
+    {% for question in questions %}
+        <div>
+            <label for="question_{{ question.id }}">{{ question.label }}</label>
+            <br>
+            {% if question.field_type == 1 %} <!-- Radio -->
+                {% for option in question.choices_list %}
+                    <label>
+                        <input type="radio" name="question_{{ question.id }}" value="{{ option.strip }}">
+                        {{ option.strip }}
+                    </label>
+                    <br>
+                {% endfor %}
+            {% elif question.field_type == 2 %} <!-- Select -->
+                <select name="question_{{ question.id }}" id="question_{{ question.id }}">
+                    {% for option in question.choices_list %}
+                        <option value="{{ option.strip }}">{{ option.strip }}</option>
+                    {% endfor %}
+                </select>
+            {% elif question.field_type == 3 %} <!-- Multi-Select -->
+                {% for option in question.choices_list %}
+                    <div>
+                        <label>
+                            <input type="checkbox" name="question_{{ question.id }}" value="{{ option.strip }}">
+                            {{ option.strip }}
+                        </label>
+                    </div>
+                    <div>
+                        <strong>{{ question.label }}</strong>
+                        <p>Dimension: {{ question.dimension }}</p>
+                        <p>Area: {{ question.area }}</p>
+                    </div>
+                {% endfor %}
+            {% elif question.field_type == 4 %} <!-- Textarea -->
+                <textarea name="question_{{ question.id }}" id="question_{{ question.id }}"></textarea>
+            {% endif %}
+        </div>
+    {% endfor %}
+
+    <button type="submit">Submit Survey</button>
+</form>
+
+{% endblock %}

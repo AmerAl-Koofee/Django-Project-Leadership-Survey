@@ -1,0 +1,10 @@
+{
+  "python.formatting.provider": "black",
+  "editor.formatOnSave": true,  // Optional: Automatically format code on save
+  "python.linting.enabled": true,
+  "python.linting.pylintEnabled": true,
+  "python.linting.pylintArgs": [
+        "--load-plugins",
+        "pylint_django"
+    ]
+}

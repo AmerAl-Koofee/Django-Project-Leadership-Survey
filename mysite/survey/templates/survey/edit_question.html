@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Edit Question</h1>
+<form method="post">
+    {% csrf_token %}
+    <!-- Question Label -->
+    <label for="label">Question:</label>
+    <input type="text" name="label" id="label" value="{{ question.label }}" required>
+
+    <!-- Field Type -->
+    <label for="field_type">Type:</label>
+    <select name="field_type" id="field_type" required>
+        <option value="1" {% if question.field_type == 1 %}selected{% endif %}>Radio</option>
+        <option value="2" {% if question.field_type == 2 %}selected{% endif %}>Select</option>
+        <option value="3" {% if question.field_type == 3 %}selected{% endif %}>Multi-Select</option>
+        <option value="4" {% if question.field_type == 4 %}selected{% endif %}>Textarea</option>
+    </select>
+
+    <!-- Options Field -->
+    <div id="options-container" style="{% if question.field_type == 1 or question.field_type == 2 or question.field_type == 3 %}display:block;{% else %}display:none;{% endif %}">
+        <label>Options:</label>
+        <div id="options-list">
+            {% for option in question.split_choices %}
+            <div class="option">
+                <input type="text" name="options[]" value="{{ option }}" placeholder="Option text" />
+                <button type="button" class="remove-option">Remove</button>
+            </div>
+            {% endfor %}
+        </div>
+        <button type="button" id="add-option-button">Add Option</button>
+    </div>
+
+    <!-- Dimension Field -->
+    <label for="dimension">Dimension:</label>
+    <input type="text" name="dimension" id="dimension" value="{{ question.dimension }}" required />
+
+    <!-- Area Field -->
+    <label for="area">Area:</label>
+    <input type="text" name="area" id="area" value="{{ question.area }}" placeholder="Enter the area" required>
+
+    <!-- Is Required Checkbox -->
+    <label for="is_required">Required:</label>
+    <input type="checkbox" name="is_required" id="is_required" {% if question.is_required %}checked{% endif %}>
+
+    <!-- Submit Button -->
+    <button type="submit">Save Changes</button>
+</form>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const addOptionButton = document.getElementById("add-option-button");
+    const optionsList = document.getElementById("options-list");
+
+    addOptionButton.addEventListener("click", function () {
+        const optionDiv = document.createElement("div");
+        optionDiv.classList.add("option");
+
+        optionDiv.innerHTML = `
+            <input type="text" name="options[]" placeholder="Option text" />
+            <button type="button" class="remove-option">Remove</button>
+        `;
+
+        optionsList.appendChild(optionDiv);
+
+        const removeButtons = optionDiv.querySelectorAll(".remove-option");
+        removeButtons.forEach((button) => {
+            button.addEventListener("click", function () {
+                optionDiv.remove();
+            });
+        });
+    });
+
+    document.querySelectorAll(".remove-option").forEach((button) => {
+        button.addEventListener("click", function () {
+            button.closest(".option").remove();
+        });
+    });
+});
+</script>
+{% endblock %}

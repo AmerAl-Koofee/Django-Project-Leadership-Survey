@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Delete Survey</h1>
+<p>Are you sure you want to delete the survey "{{ survey.name }}"?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="delete-button">Yes, Delete</button>
+    <a href="{% url 'survey:survey-detail' survey.slug %}" class="cancel-button">Cancel</a>
+</form>
+{% endblock %}

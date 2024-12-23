@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Add Questions to {{ survey.name }}</h1>
+<button type="button" class="edit-survey-button" onclick="location.href='{% url 'survey:edit-survey' survey.slug %}'">
+    Edit Survey
+</button>
+
+<form method="post">
+    {% csrf_token %}
+    <label for="label">Question:</label>
+    <input type="text" name="label" id="label" required>
+    
+    <label for="field_type">Type:</label>
+    <select name="field_type" id="field_type" required>
+        <option value="1">Radio</option>
+        <option value="2">Select</option>
+        <option value="3">Multi-Select</option>
+        <option value="4">Textarea</option>
+    </select>
+    
+    <div id="options-container" style="display:none;">
+        <label>Options:</label>
+        <div id="options-list">
+            <!-- Options will be dynamically added here -->
+        </div>
+        <button type="button" id="add-option-button">Add Option</button>
+    </div>
+
+    <label for="dimension">Dimension:</label>
+    <input type="text" name="dimension" id="dimension" placeholder="Enter dimension">
+
+    <label for="area">Area:</label>
+    <input type="text" name="area" id="area" placeholder="Enter area">
+    
+    <label for="is_required">Required:</label>
+    <input type="checkbox" name="is_required" id="is_required">
+    
+    <button type="submit">Add Question</button>
+</form>
+
+<h2>Existing Questions</h2>
+<ul>
+    {% for question in survey.questions.all %}
+        <li>
+            {{ question.label }}
+            <button type="button" class="edit-button" onclick="location.href='{% url 'survey:edit-question' question.id %}'">
+                Edit
+            </button>
+            <button type="button" class="delete-button" onclick="location.href='{% url 'survey:delete-question' question.id %}'">
+                Delete
+            </button>            
+        </li>
+    {% endfor %}
+</ul>
+
+<!-- Publish Button -->
+<form method="post" style="margin-top: 20px;">
+    {% csrf_token %}
+    <button type="submit" name="publish" class="publish-button">Publish Survey</button>
+</form>
+
+<script>
+    const fieldType = document.getElementById("field_type");
+    const optionsContainer = document.getElementById("options-container");
+    const optionsList = document.getElementById("options-list");
+    const addOptionButton = document.getElementById("add-option-button");
+
+    fieldType.addEventListener("change", () => {
+        if (["1", "2", "3"].includes(fieldType.value)) {
+            optionsContainer.style.display = "block";
+        } else {
+            optionsContainer.style.display = "none";
+            optionsList.innerHTML = ""; // Clear options if not applicable
+        }
+    });
+
+    addOptionButton.addEventListener("click", () => {
+        const optionInput = document.createElement("input");
+        optionInput.type = "text";
+        optionInput.name = "options";
+        optionInput.placeholder = "Enter option";
+        optionsList.appendChild(optionInput);
+    });
+</script>
+{% endblock %}

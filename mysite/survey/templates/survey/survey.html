@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Surveys</h1>
+<ul>
+    {% for survey in surveys %}
+        <li>
+            {% if survey.password %}
+                <a href="{% url 'survey:password-prompt' survey.slug %}">{{ survey.name }}</a>
+            {% else %}
+                <a href="{% url 'survey:survey-detail' survey.slug %}">{{ survey.name }}</a>
+            {% endif %}
+            <small>Created by: {{ survey.created_by.username }}</small>
+            {% if user.is_superuser %}
+            <form method="get" action="{% url 'survey:edit-survey' survey.slug %}" style="display: inline;">
+                <button type="submit" class="edit-button">Edit</button>
+            </form>
+            <form method="post" action="{% url 'survey:delete-survey' survey.slug %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="delete-button" onclick="return confirm('Are you sure you want to delete this survey?');">Delete</button>
+            </form>            
+            {% endif %}
+        </li>
+    {% empty %}
+        <p>No surveys available.</p>
+    {% endfor %}
+</ul>
+{% endblock %}
+
